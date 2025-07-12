@@ -1,8 +1,9 @@
 import axios from "axios";
 
 // need to use this in env
-const API_BASE_URL = "https://reqres.in/api";
-const API_KEY = "reqres-free-v1";
+const API_BASE_URL =
+  process.env.REACT_APP_API_BASE_URL || "https://reqres.in/api";
+const API_KEY = process.env.REACT_APP_API_KEY || "your_api_key_here";
 
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
