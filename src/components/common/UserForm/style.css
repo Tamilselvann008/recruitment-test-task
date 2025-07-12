@@ -1,0 +1,20 @@
+.text_field_wrapper {
+  margin-bottom: 20px;
+}
+
+.common_input_label {
+  font-size: 16px;
+  font-weight: 500;
+  color: #1a1a1a;
+  margin-bottom: 6px;
+}
+
+.text_field_input {
+  width: 100%;
+}
+
+.error_message {
+  font-size: 13px;
+  color: #f44336;
+  margin-top: 4px;
+}
