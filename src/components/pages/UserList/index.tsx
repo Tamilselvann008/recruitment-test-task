@@ -52,12 +52,10 @@ const UserList: React.FC = () => {
 
   const handleCreate = () => {
     setPopup((prev) => ({ ...prev, openForm: true, selectedUser: null }));
-    getUsers();
   };
 
   const handleFormClose = () => {
     setPopup((prev) => ({ ...prev, openForm: false, selectedUser: null }));
-    getUsers();
   };
 
   const handleChangePage = (
@@ -85,9 +83,10 @@ const UserList: React.FC = () => {
     try {
       setLoading(true);
       const response = await UserService.delete(id);
-      if (response.status === 200) {
+      if (response.status === 204) {
         showSuccess("User deleted successfully");
         setUsers((prev) => prev.filter((user) => user.id !== id));
+        getUsers();
       }
     } catch (error) {
       console.error("Error deleting user:", error);
@@ -204,6 +203,7 @@ const UserList: React.FC = () => {
           open={popup.openForm}
           onClose={handleFormClose}
           initialData={popup.selectedUser || null}
+          onSuccess={getUsers}
         />
       )}
 

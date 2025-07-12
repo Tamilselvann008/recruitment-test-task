@@ -29,7 +29,7 @@ export const UserService = {
   create: async (data: any) => {
     try {
       const response = await axiosInstance.post("/users", data);
-      return response.data;
+      return response;
     } catch (error) {
       console.error("Error creating user:", error);
       throw error;
@@ -39,7 +39,7 @@ export const UserService = {
   update: async (id: number, data: any) => {
     try {
       const response = await axiosInstance.put(`/users/${id}`, data);
-      return response.data;
+      return response;
     } catch (error) {
       console.error(`Error updating user ${id}:`, error);
       throw error;
@@ -49,7 +49,7 @@ export const UserService = {
   delete: async (id: number) => {
     try {
       const response = await axiosInstance.delete(`/users/${id}`);
-      return response.data;
+      return response;
     } catch (error) {
       console.error(`Error deleting user ${id}:`, error);
       throw error;

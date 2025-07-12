@@ -24,10 +24,16 @@ export interface UserFormData {
 interface UserFormProps {
   open: boolean;
   onClose: () => void;
-  initialData?: User | null; // For edit mode
+  initialData?: User | null;
+  onSuccess?: () => void;
 }
 
-const UserForm: React.FC<UserFormProps> = ({ open, onClose, initialData }) => {
+const UserForm: React.FC<UserFormProps> = ({
+  open,
+  onClose,
+  initialData,
+  onSuccess,
+}) => {
   const [loading, setLoading] = useState(false);
   const {
     control,
@@ -53,11 +59,14 @@ const UserForm: React.FC<UserFormProps> = ({ open, onClose, initialData }) => {
         const res = await UserService.update(+initialData?.id, formData);
         if (res.status === 200) {
           showSuccess("User updated successfully");
+          onSuccess?.();
         }
-        console.log("User updated:", res);
       } else {
         const res = await UserService.create(formData);
-        console.log("User created:", res);
+        if (res.status === 201) {
+          showSuccess("User created successfully");
+          onSuccess?.();
+        }
       }
       onClose();
     } catch (error) {

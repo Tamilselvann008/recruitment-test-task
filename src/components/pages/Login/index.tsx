@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Box,
   Button,
@@ -10,9 +10,10 @@ import {
   Typography,
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
-import { AuthService } from "../../../services/authService";
 import { useNavigate } from "react-router-dom";
 import { showError, showSuccess } from "../../../utils/common";
+import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHook";
+import { login } from "../../../redux/slices/authSlice";
 
 type LoginFormInputs = {
   email: string;
@@ -21,8 +22,13 @@ type LoginFormInputs = {
 };
 
 const LoginForm: React.FC = () => {
-  const [loading, setLoading] = React.useState(false);
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
+  const { isAuthenticated, loading, error, token } = useAppSelector(
+    (state) => state.auth
+  );
+
   const {
     control,
     handleSubmit,
@@ -35,25 +41,24 @@ const LoginForm: React.FC = () => {
     },
   });
 
-  const onSubmit = async (data: LoginFormInputs) => {
-    try {
-      setLoading(true);
-      const response = await AuthService.login({
-        email: data.email,
-        password: data.password,
-      });
-      if (response?.status === 201) {
-        localStorage.setItem("token", response.data.email);
-        showSuccess("Login successful");
-          window.location.href = "/users";
-          console.log("Login successful:", response);
-      }
-    } catch (error) {
-      setLoading(false);
-      showError("Login failed. Please check your credentials.");
-      console.error("Login failed:", error);
-    }
+  const onSubmit = (data: LoginFormInputs) => {
+    dispatch(login({ email: data.email, password: data.password }));
   };
+
+  // Show success toast and redirect on successful login
+  useEffect(() => {
+    if (!!(isAuthenticated && token)) {
+      showSuccess("Login successful");
+      navigate("/users");
+    }
+  }, [isAuthenticated, token]);
+
+  // Show error toast if login fails
+  useEffect(() => {
+    if (error) {
+      showError(error);
+    }
+  }, [error]);
 
   return (
     <Container maxWidth="sm">
@@ -123,10 +128,9 @@ const LoginForm: React.FC = () => {
             fullWidth
             variant="contained"
             sx={{ mt: 2, bgcolor: "#2196f3" }}
-            loading={loading}
             disabled={loading}
           >
-            Log in
+            {loading ? "Logging in..." : "Log in"}
           </Button>
         </Box>
       </Box>

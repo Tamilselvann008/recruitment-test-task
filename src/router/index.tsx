@@ -4,28 +4,30 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-
-// import Login from "./pages/Login";
-// import UserList from "./pages/UserList";
-// import CreateUser from "./pages/CreateUser";
-// import EditUser from "./pages/EditUser";
-// import NotFound from "./pages/NotFound";
 import PrivateWrapper from "./PrivateWrapper";
 import { Login } from "../pages/Login";
 import UserList from "../components/pages/UserList";
 import PublicRoute from "./PublicRoute";
+import { useAppSelector } from "../hooks/reduxHook";
 
 const AppRoutes = () => {
-  const isAuthenticated = !!localStorage.getItem("token");
+  const { isAuthenticated, token } = useAppSelector((state) => state.auth);
+
   return (
     <Router>
       <Routes>
-        <Route element={<PublicRoute isAuthenticated={isAuthenticated} />}>
+        <Route
+          element={
+            <PublicRoute isAuthenticated={!!(isAuthenticated && token)} />
+          }
+        >
           <Route path="/login" element={<Login />} />
         </Route>
         <Route
           element={
-            <PrivateWrapper auth={{ isAuthenticated: isAuthenticated }} />
+            <PrivateWrapper
+              auth={{ isAuthenticated: !!(isAuthenticated && token) }}
+            />
           }
         >
           <Route path="/users" element={<UserList />} />
